@@ -51,6 +51,7 @@ public class AccountServiceImpl implements AccountService {
         savingsAccount.setAccountNumber(accountGen());
 
         savingsAccountDao.save(savingsAccount);
+        System.out.println("test");
 
         return savingsAccountDao.findByAccountNumber(savingsAccount.getAccountNumber());
     }
