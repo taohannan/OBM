@@ -19,6 +19,9 @@ import com.userfront.service.AccountService;
 import com.userfront.service.TransactionService;
 import com.userfront.service.UserService;
 
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.validation.Errors;
+
 @Controller
 @RequestMapping("/account")
 public class AccountController {
@@ -81,8 +84,14 @@ public class AccountController {
     }
 
     @RequestMapping(value = "/withdraw", method = RequestMethod.POST)
-    public String withdrawPOST(@ModelAttribute("amount") String amount, @ModelAttribute("accountType") String accountType, Principal principal) {
-        accountService.withdraw(accountType, Double.parseDouble(amount), principal);
+    public String withdrawPOST(@ModelAttribute("amount") String amount, @ModelAttribute("accountType") String accountType, Principal principal,Errors errors, RedirectAttributes redirectAttributes) {
+        try {
+            accountService.withdraw(accountType, Double.parseDouble(amount), principal);
+        } catch (java.lang.Exception e) {
+            e.printStackTrace();
+            errors.rejectValue("onStock", "Book out of stock. Come later...");
+            redirectAttributes.addFlashAttribute("errorMessage", "We couldn't process your order!");
+        }
 
         return "redirect:/userFront";
     }

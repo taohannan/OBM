@@ -17,6 +17,7 @@ import com.userfront.domain.User;
 import com.userfront.service.AccountService;
 import com.userfront.service.TransactionService;
 import com.userfront.service.UserService;
+import exceptions.BelowMinimumBalanceException;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -80,27 +81,33 @@ public class AccountServiceImpl implements AccountService {
         }
     }
     
-    public void withdraw(String accountType, double amount, Principal principal) {
+    public void withdraw(String accountType, double amount, Principal principal) throws BelowMinimumBalanceException{
         User user = userService.findByUsername(principal.getName());
 
-        if (accountType.equalsIgnoreCase("Primary")) {
-            PrimaryAccount primaryAccount = user.getPrimaryAccount();
-            primaryAccount.setAccountBalance(primaryAccount.getAccountBalance().subtract(new BigDecimal(amount)));
-            primaryAccountDao.save(primaryAccount);
+            if (accountType.equalsIgnoreCase("Primary")) {
+                PrimaryAccount primaryAccount = user.getPrimaryAccount();
 
-            Date date = new Date();
+                int res =primaryAccount.getAccountBalance().compareTo(new BigDecimal(amount));
 
-            PrimaryTransaction primaryTransaction = new PrimaryTransaction(date, "Withdraw from Primary Account", "Account", "Finished", amount, primaryAccount.getAccountBalance(), primaryAccount);
-            transactionService.savePrimaryWithdrawTransaction(primaryTransaction);
-        } else if (accountType.equalsIgnoreCase("Savings")) {
-            SavingsAccount savingsAccount = user.getSavingsAccount();
-            savingsAccount.setAccountBalance(savingsAccount.getAccountBalance().subtract(new BigDecimal(amount)));
-            savingsAccountDao.save(savingsAccount);
+                if (res == -1){
+                    throw new BelowMinimumBalanceException("Below Minimum balance exceed");}
 
-            Date date = new Date();
-            SavingsTransaction savingsTransaction = new SavingsTransaction(date, "Withdraw from savings Account", "Account", "Finished", amount, savingsAccount.getAccountBalance(), savingsAccount);
-            transactionService.saveSavingsWithdrawTransaction(savingsTransaction);
-        }
+                primaryAccount.setAccountBalance(primaryAccount.getAccountBalance().subtract(new BigDecimal(amount)));
+                primaryAccountDao.save(primaryAccount);
+
+                Date date = new Date();
+
+                PrimaryTransaction primaryTransaction = new PrimaryTransaction(date, "Withdraw from Primary Account", "Account", "Finished", amount, primaryAccount.getAccountBalance(), primaryAccount);
+                transactionService.savePrimaryWithdrawTransaction(primaryTransaction);
+            } else if (accountType.equalsIgnoreCase("Savings")) {
+                SavingsAccount savingsAccount = user.getSavingsAccount();
+                savingsAccount.setAccountBalance(savingsAccount.getAccountBalance().subtract(new BigDecimal(amount)));
+                savingsAccountDao.save(savingsAccount);
+
+                Date date = new Date();
+                SavingsTransaction savingsTransaction = new SavingsTransaction(date, "Withdraw from savings Account", "Account", "Finished", amount, savingsAccount.getAccountBalance(), savingsAccount);
+                transactionService.saveSavingsWithdrawTransaction(savingsTransaction);
+            }
     }
     
     private int accountGen() {
