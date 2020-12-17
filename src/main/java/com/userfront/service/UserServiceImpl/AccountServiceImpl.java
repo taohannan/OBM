@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.Date;
 
+import com.userfront.exception.BelowMinimumBalanceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,7 @@ import com.userfront.domain.User;
 import com.userfront.service.AccountService;
 import com.userfront.service.TransactionService;
 import com.userfront.service.UserService;
-import exceptions.BelowMinimumBalanceException;
+
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -38,7 +39,7 @@ public class AccountServiceImpl implements AccountService {
 
     public PrimaryAccount createPrimaryAccount() {
         PrimaryAccount primaryAccount = new PrimaryAccount();
-        primaryAccount.setAccountBalance(new BigDecimal(0.0));
+        primaryAccount.setAccountBalance(BigDecimal.ZERO);
         primaryAccount.setAccountNumber(accountGen());
 
         primaryAccountDao.save(primaryAccount);
@@ -48,7 +49,7 @@ public class AccountServiceImpl implements AccountService {
 
     public SavingsAccount createSavingsAccount() {
         SavingsAccount savingsAccount = new SavingsAccount();
-        savingsAccount.setAccountBalance(new BigDecimal(0.0));
+        savingsAccount.setAccountBalance(BigDecimal.ZERO);
         savingsAccount.setAccountNumber(accountGen());
 
         savingsAccountDao.save(savingsAccount);
@@ -89,7 +90,7 @@ public class AccountServiceImpl implements AccountService {
 
                 int res =primaryAccount.getAccountBalance().compareTo(new BigDecimal(amount));
 
-                if (res == -1){
+                if (res < 0){
                     throw new BelowMinimumBalanceException("Below Minimum balance exceed");}
 
                 primaryAccount.setAccountBalance(primaryAccount.getAccountBalance().subtract(new BigDecimal(amount)));
