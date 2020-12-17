@@ -6,7 +6,8 @@ import com.userfront.domain.PrimaryAccount;
 import com.userfront.domain.PrimaryTransaction;
 import com.userfront.domain.SavingsAccount;
 import com.userfront.domain.SavingsTransaction;
-import exceptions.BelowMinimumBalanceException;
+import com.userfront.exception.BelowMinimumBalanceException;
+
 
 public interface AccountService {
 	PrimaryAccount createPrimaryAccount();
