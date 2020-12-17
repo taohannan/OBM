@@ -3,6 +3,7 @@ package com.userfront.service.UserServiceImpl;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.Date;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,7 +40,7 @@ public class AccountServiceImpl implements AccountService {
         PrimaryAccount primaryAccount = new PrimaryAccount();
         primaryAccount.setAccountBalance(new BigDecimal(0.0));
         primaryAccount.setAccountNumber(accountGen());
-
+        System.out.println(primaryAccount.getAccountNumber());
         primaryAccountDao.save(primaryAccount);
 
         return primaryAccountDao.findByAccountNumber(primaryAccount.getAccountNumber());
@@ -104,7 +105,7 @@ public class AccountServiceImpl implements AccountService {
     }
     
     private int accountGen() {
-        return ++nextAccountNumber;
+        return new Random().nextInt(10000000);
     }
 
 	
