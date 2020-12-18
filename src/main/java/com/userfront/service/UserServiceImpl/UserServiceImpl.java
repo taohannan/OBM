@@ -50,6 +50,7 @@ public class UserServiceImpl implements UserService{
     public User findByEmail(String email) {
         //REQUIRES: email as  String type
         //EFFECTS: return email if found in database
+        
         return userDao.findByEmail(email);
     }
     
