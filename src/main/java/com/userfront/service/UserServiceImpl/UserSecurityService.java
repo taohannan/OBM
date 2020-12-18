@@ -22,9 +22,15 @@ public class UserSecurityService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        //OVERVIEW: check the exisitince of user in database
+        //REQUIRES: username as  String type
+        //EFFECTS: if username does not exist in database, throws UsernameNotFoundException
+        //          else, return user (the username)
+
         User user = userDao.findByUsername(username);
         if (null == user) {
             LOG.warn("Username {} not found", username);
+            //EXCEPTION: throw UsernameNotFoundException - if username does not exist in database
             throw new UsernameNotFoundException("Username " + username + " not found");
         }
         return user;

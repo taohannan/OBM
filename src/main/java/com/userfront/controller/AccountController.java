@@ -84,13 +84,14 @@ public class AccountController {
     }
 
     @RequestMapping(value = "/withdraw", method = RequestMethod.POST)
-    public String withdrawPOST(@ModelAttribute("amount") String amount, @ModelAttribute("accountType") String accountType, Principal principal,Errors errors, RedirectAttributes redirectAttributes) {
+    public String withdrawPOST(@ModelAttribute("amount") String amount, @ModelAttribute("accountType") String accountType, Principal principal,Errors errors, RedirectAttributes redirectAttributes,Model model) {
         try {
             accountService.withdraw(accountType, Double.parseDouble(amount), principal);
         } catch (java.lang.Exception e) {
             e.printStackTrace();
 //            errors.rejectValue("onStock", "Book out of stock. Come later...");
-            redirectAttributes.addFlashAttribute("errorMessage", "We couldn't process your order!");
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            model.addAttribute("errorMessage", e.getMessage());
             return "withdraw";
         }
 

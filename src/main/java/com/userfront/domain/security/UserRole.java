@@ -31,26 +31,35 @@ public class UserRole {
     public UserRole() {}
 
     public long getUserRoleId() {
+        //EFFECTS: return userRoleId data member value that has been initialized at setUserRoleId() procedure/method
         return userRoleId;
     }
 
     public void setUserRoleId(long userRoleId) {
+        //REQUIRES: userRoleId as long type
+        //MODIFIES: this.userRoleId
         this.userRoleId = userRoleId;
     }
 
     public User getUser() {
+        //EFFECTS: return user data member value that has been initialized at setUser() procedure/method
         return user;
     }
 
     public void setUser(User user) {
+        //REQUIRES: user as User object type
+        //MODIFIES: this.user
         this.user = user;
     }
 
     public Role getRole() {
+        //EFFECTS: return role data member value that has been initialized at setRole() procedure/method
         return role;
     }
 
     public void setRole(Role role) {
+        //REQUIRES: role as Role object type
+        //MODIFIES: this.role
         this.role = role;
     }
 
