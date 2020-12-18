@@ -3,7 +3,9 @@ package com.userfront.service.UserServiceImpl;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.Date;
+import java.util.Random;
 
+import com.userfront.exception.BelowMinimumBalanceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +19,7 @@ import com.userfront.domain.User;
 import com.userfront.service.AccountService;
 import com.userfront.service.TransactionService;
 import com.userfront.service.UserService;
-import exceptions.BelowMinimumBalanceException;
+
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -39,9 +41,9 @@ public class AccountServiceImpl implements AccountService {
     public PrimaryAccount createPrimaryAccount() {
         //EFFECTS: return account number for PrimaryAccount
         PrimaryAccount primaryAccount = new PrimaryAccount();
-        primaryAccount.setAccountBalance(new BigDecimal(0.0));
+        primaryAccount.setAccountBalance(BigDecimal.ZERO);
         primaryAccount.setAccountNumber(accountGen());
-
+        System.out.println(primaryAccount.getAccountNumber());
         primaryAccountDao.save(primaryAccount);
 
         return primaryAccountDao.findByAccountNumber(primaryAccount.getAccountNumber());
@@ -50,7 +52,7 @@ public class AccountServiceImpl implements AccountService {
     public SavingsAccount createSavingsAccount() {
         //EFFECTS: return account number for SavingAccount
         SavingsAccount savingsAccount = new SavingsAccount();
-        savingsAccount.setAccountBalance(new BigDecimal(0.0));
+        savingsAccount.setAccountBalance(BigDecimal.ZERO);
         savingsAccount.setAccountNumber(accountGen());
 
         savingsAccountDao.save(savingsAccount);
@@ -107,9 +109,10 @@ public class AccountServiceImpl implements AccountService {
                 //formula to check the equality between accountBalance and amount
                 int res =primaryAccount.getAccountBalance().compareTo(new BigDecimal(amount));
 
-                if (res == -1){
-                    //EXCEPTION: throw BelowMinimumBalanceException - if amount > accountBalance
-                    throw new BelowMinimumBalanceException("Below Minimum balance exceed");}
+
+                if (res < 0){
+                    throw new BelowMinimumBalanceException("Below Minimum balance exceed");
+                }
 
                 primaryAccount.setAccountBalance(primaryAccount.getAccountBalance().subtract(new BigDecimal(amount)));
                 primaryAccountDao.save(primaryAccount);
@@ -133,7 +136,7 @@ public class AccountServiceImpl implements AccountService {
     
     private int accountGen() {
         //EFFECTS: return nextAccountNumber increment value
-        return ++nextAccountNumber;
+        return new Random().nextInt(10000000);
     }
 
 	
