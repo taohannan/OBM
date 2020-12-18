@@ -112,6 +112,7 @@ public class AccountServiceImpl implements AccountService {
 
                 if (res < 0){
                     throw new BelowMinimumBalanceException("Below Minimum balance exceed");
+                    
                 }
 
                 primaryAccount.setAccountBalance(primaryAccount.getAccountBalance().subtract(new BigDecimal(amount)));
