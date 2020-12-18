@@ -11,7 +11,7 @@
                     <label for="transferFrom">1. Please select the account you would like to transfer From:</label>
                     <select class="form-control" th:value="${transferFrom}" name="transferFrom" id="transferFrom" required="required" >
                         <option  disabled="disabled" selected="selected"> -- select your account -- </option>
-                        <option value="Primary">Current</option>
+                        <option value="Primary">Primary</option>
                         <option value="Savings">Savings</option>
                     </select>
                     <br />
@@ -29,7 +29,7 @@
 
                 <div class="form-group">
                     <label>3. Please specify the amount you would like to transfer: </label>
-                    <span class="input-group-addon">Amount RM</span>
+                    <span class="input-group-addon">Amount $</span>
                     <input th:value="${amount}" type="text" name="amount" id="amount" class="form-control" aria-label="Amount (to the nearest dollar)"  />
                 </div>
 
