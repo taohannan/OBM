@@ -84,14 +84,22 @@ public class AccountServiceImpl implements AccountService {
     }
     
     public void withdraw(String accountType, double amount, Principal principal) throws BelowMinimumBalanceException{
+        //OVERVIEW: Withdraw for Primary Account and Saving Account
+        //REQUIRES: accountType as  String type, amount as double type, principal as Principal object
+        //MODIFIES: accountBalance = accountBalance - amount (by using mutator)
+        //EFFECTS: if amount > accountBalance, throws BelowMinimumBalanceException
+        //          else, accountBalance will be updated based on the amount
         User user = userService.findByUsername(principal.getName());
 
-            if (accountType.equalsIgnoreCase("Primary")) {
+        //Withdraw for Primary Account
+        if (accountType.equalsIgnoreCase("Primary")) {
                 PrimaryAccount primaryAccount = user.getPrimaryAccount();
 
+                //formula to check the equality between accountBalance and amount
                 int res =primaryAccount.getAccountBalance().compareTo(new BigDecimal(amount));
 
                 if (res < 0){
+                    //EXCEPTION: throw BelowMinimumBalanceException - if amount > accountBalance
                     throw new BelowMinimumBalanceException("Below Minimum balance exceed");}
 
                 primaryAccount.setAccountBalance(primaryAccount.getAccountBalance().subtract(new BigDecimal(amount)));
@@ -101,8 +109,15 @@ public class AccountServiceImpl implements AccountService {
 
                 PrimaryTransaction primaryTransaction = new PrimaryTransaction(date, "Withdraw from Primary Account", "Account", "Finished", amount, primaryAccount.getAccountBalance(), primaryAccount);
                 transactionService.savePrimaryWithdrawTransaction(primaryTransaction);
-            } else if (accountType.equalsIgnoreCase("Savings")) {
+            }
+        //Withdraw for Saving Account
+        else if (accountType.equalsIgnoreCase("Savings")) {
                 SavingsAccount savingsAccount = user.getSavingsAccount();
+            int res =savingsAccount.getAccountBalance().compareTo(new BigDecimal(amount));
+
+            if (res < 0){
+                //EXCEPTION: throw BelowMinimumBalanceException - if amount > accountBalance
+                throw new BelowMinimumBalanceException("Below Minimum balance exceed");}
                 savingsAccount.setAccountBalance(savingsAccount.getAccountBalance().subtract(new BigDecimal(amount)));
                 savingsAccountDao.save(savingsAccount);
 

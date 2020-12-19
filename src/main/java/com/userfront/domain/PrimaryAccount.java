@@ -27,34 +27,46 @@ public class PrimaryAccount {
     private List<PrimaryTransaction> primaryTransactionList;
 
     public Long getId() {
+        //EFFECTS: return id data member value that has been initialized at setId() procedure/method
         return id;
     }
 
     public void setId(Long id) {
+        //REQUIRES: id as Long type
+        //MODIFIES: this.id
         this.id = id;
     }
 
     public int getAccountNumber() {
+        //EFFECTS: return accountNumber data member value that has been initialized at setAccountNumber() procedure/method
         return accountNumber;
     }
 
     public void setAccountNumber(int accountNumber) {
+        //REQUIRES: accountNumber as int type
+        //MODIFIES: this.accountNumber
         this.accountNumber = accountNumber;
     }
 
     public BigDecimal getAccountBalance() {
+        //EFFECTS: return accountBalance data member value that has been initialized at setAccountBalance() procedure/method
         return accountBalance;
     }
 
     public void setAccountBalance(BigDecimal accountBalance) {
+        //REQUIRES: accountBalance as BigDecimal  type
+        //MODIFIES: this.accountBalance
         this.accountBalance = accountBalance;
     }
 
     public List<PrimaryTransaction> getPrimaryTransactionList() {
+        //EFFECTS: return primaryTransactionList List value that has been initialized at setPrimaryTransactionList() procedure/method
         return primaryTransactionList;
     }
 
     public void setPrimaryTransactionList(List<PrimaryTransaction> primaryTransactionList) {
+        //REQUIRES: primaryTransactionList as List type
+        //MODIFIES: this.primaryTransactionList
         this.primaryTransactionList = primaryTransactionList;
     }
 
