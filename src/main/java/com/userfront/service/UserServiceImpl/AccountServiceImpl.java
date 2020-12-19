@@ -39,7 +39,6 @@ public class AccountServiceImpl implements AccountService {
     private TransactionService transactionService;
 
     public PrimaryAccount createPrimaryAccount() {
-        //EFFECTS: return account number for PrimaryAccount
         PrimaryAccount primaryAccount = new PrimaryAccount();
         primaryAccount.setAccountBalance(BigDecimal.ZERO);
         primaryAccount.setAccountNumber(accountGen());
@@ -50,7 +49,6 @@ public class AccountServiceImpl implements AccountService {
     }
 
     public SavingsAccount createSavingsAccount() {
-        //EFFECTS: return account number for SavingAccount
         SavingsAccount savingsAccount = new SavingsAccount();
         savingsAccount.setAccountBalance(BigDecimal.ZERO);
         savingsAccount.setAccountNumber(accountGen());
@@ -62,14 +60,8 @@ public class AccountServiceImpl implements AccountService {
     }
     
     public void deposit(String accountType, double amount, Principal principal) {
-        //OVERVIEW: Deposit for Primary Account and Saving Account
-        //REQUIRES: accountType as  String type, amount as double type, principal as Principal object
-        //MODIFIES: accountBalance = accountBalance + amount (by using mutator)
-        //EFFECTS: accountBalance will be updated based on the amount
-
         User user = userService.findByUsername(principal.getName());
 
-        //Deposit for Primary Account
         if (accountType.equalsIgnoreCase("Primary")) {
             PrimaryAccount primaryAccount = user.getPrimaryAccount();
             primaryAccount.setAccountBalance(primaryAccount.getAccountBalance().add(new BigDecimal(amount)));
@@ -80,9 +72,7 @@ public class AccountServiceImpl implements AccountService {
             PrimaryTransaction primaryTransaction = new PrimaryTransaction(date, "Deposit to Primary Account", "Account", "Finished", amount, primaryAccount.getAccountBalance(), primaryAccount);
             transactionService.savePrimaryDepositTransaction(primaryTransaction);
             
-        }
-       // Deposit for Saving Account
-        else if (accountType.equalsIgnoreCase("Savings")) {
+        } else if (accountType.equalsIgnoreCase("Savings")) {
             SavingsAccount savingsAccount = user.getSavingsAccount();
             savingsAccount.setAccountBalance(savingsAccount.getAccountBalance().add(new BigDecimal(amount)));
             savingsAccountDao.save(savingsAccount);
@@ -99,20 +89,18 @@ public class AccountServiceImpl implements AccountService {
         //MODIFIES: accountBalance = accountBalance - amount (by using mutator)
         //EFFECTS: if amount > accountBalance, throws BelowMinimumBalanceException
         //          else, accountBalance will be updated based on the amount
-
         User user = userService.findByUsername(principal.getName());
 
-            //Withdraw for Primary Account
-            if (accountType.equalsIgnoreCase("Primary")) {
+        //Withdraw for Primary Account
+        if (accountType.equalsIgnoreCase("Primary")) {
                 PrimaryAccount primaryAccount = user.getPrimaryAccount();
 
                 //formula to check the equality between accountBalance and amount
                 int res =primaryAccount.getAccountBalance().compareTo(new BigDecimal(amount));
 
-
                 if (res < 0){
-                    throw new BelowMinimumBalanceException("Below Minimum balance exceed");
-                }
+                    //EXCEPTION: throw BelowMinimumBalanceException - if amount > accountBalance
+                    throw new BelowMinimumBalanceException("Below Minimum balance exceed");}
 
                 primaryAccount.setAccountBalance(primaryAccount.getAccountBalance().subtract(new BigDecimal(amount)));
                 primaryAccountDao.save(primaryAccount);
@@ -122,9 +110,14 @@ public class AccountServiceImpl implements AccountService {
                 PrimaryTransaction primaryTransaction = new PrimaryTransaction(date, "Withdraw from Primary Account", "Account", "Finished", amount, primaryAccount.getAccountBalance(), primaryAccount);
                 transactionService.savePrimaryWithdrawTransaction(primaryTransaction);
             }
-            //Withdraw for Saving Account
-            else if (accountType.equalsIgnoreCase("Savings")) {
+        //Withdraw for Saving Account
+        else if (accountType.equalsIgnoreCase("Savings")) {
                 SavingsAccount savingsAccount = user.getSavingsAccount();
+            int res =savingsAccount.getAccountBalance().compareTo(new BigDecimal(amount));
+
+            if (res < 0){
+                //EXCEPTION: throw BelowMinimumBalanceException - if amount > accountBalance
+                throw new BelowMinimumBalanceException("Below Minimum balance exceed");}
                 savingsAccount.setAccountBalance(savingsAccount.getAccountBalance().subtract(new BigDecimal(amount)));
                 savingsAccountDao.save(savingsAccount);
 
@@ -135,7 +128,6 @@ public class AccountServiceImpl implements AccountService {
     }
     
     private int accountGen() {
-        //EFFECTS: return nextAccountNumber increment value
         return new Random().nextInt(10000000);
     }
 
